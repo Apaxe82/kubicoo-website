@@ -1,0 +1,18 @@
+# Kubicoo - Robots.txt
+User-agent: *
+Allow: /
+Allow: /properties
+Allow: /about
+Allow: /pricing
+Allow: /contact
+
+# Sitemap
+Sitemap: https://kubicoo.com/sitemap.xml
+
+# Disallow admin areas
+Disallow: /dashboard
+Disallow: /api
+Disallow: /admin
+
+# Crawl-delay
+Crawl-delay: 1
