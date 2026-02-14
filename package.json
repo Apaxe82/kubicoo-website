@@ -12,7 +12,7 @@
   "dependencies": {
     "@tailwindcss/postcss": "^4.1.18",
     "@tailwindcss/typography": "^0.5.19",
-    "axios": "^1.7.9",
+    "axios": "^1.13.5",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
     "firebase": "^11.10.0",
@@ -22,7 +22,7 @@
     "next": "16.1.6",
     "react": "^19",
     "react-dom": "^19",
-    "react-hot-toast": "^2.4.1",
+    "react-hot-toast": "^2.6.0",
     "react-leaflet": "^5.0.0",
     "tailwind-merge": "^2.6.0"
   },
@@ -31,7 +31,7 @@
     "autoprefixer": "^10.4.20",
     "eslint": "^10.0.0",
     "eslint-config-next": "^16.1.6",
-    "postcss": "^8.5.6",
+    "postcss": "^8.4.49",
     "tailwindcss": "^3.4.17"
   }
 }

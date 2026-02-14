@@ -122,8 +122,8 @@ cat > public/manifest.json << 'EOF'
   "description": "Digital que abre portas. Destinos que transcendem.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#1a2332",
-  "theme_color": "#3dd9d6",
+  "background_color": radial-gradient(circle at top right, #1a2332, #0f1419),
+  "theme_color": "#ffffff",
   "icons": [
     {
       "src": "/images/logo.png",
