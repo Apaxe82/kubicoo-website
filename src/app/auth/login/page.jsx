@@ -1,171 +1,101 @@
 'use client';
 
-// src/app/auth/login/page.jsx
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import Image from 'next/image';
-import { useAuth } from '@/contexts/AuthContext';
-import { Mail, Lock, Eye, EyeOff, LogIn } from 'lucide-react';
-import toast from 'react-hot-toast';
 
 export default function LoginPage() {
-  const router = useRouter();
-  const { login } = useAuth();
-  const [showPassword, setShowPassword] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
-  const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-  });
+  const [error, setError] = useState('');
+  const router = useRouter();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+    setError('');
 
     try {
-      await login(formData.email, formData.password);
-      toast.success('Login realizado com sucesso!');
-      router.push('/dashboard');
-    } catch (error) {
-      console.error('Login error:', error);
-      
-      if (error.code === 'auth/user-not-found') {
-        toast.error('Utilizador não encontrado');
-      } else if (error.code === 'auth/wrong-password') {
-        toast.error('Senha incorreta');
-      } else if (error.code === 'auth/invalid-email') {
-        toast.error('Email inválido');
-      } else {
-        toast.error('Erro ao fazer login. Tente novamente.');
+      const response = await fetch('http://localhost:5000/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Login failed');
       }
+
+      const data = await response.json();
+      localStorage.setItem('token', data.token);
+      router.push('/dashboard');
+    } catch (err) {
+      setError(err.message);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-kubicoo-navy via-kubicoo-dark to-gray-900 flex items-center justify-center p-4">
-      <div className="max-w-md w-full">
-        {/* Logo */}
-        <div className="text-center mb-8">
-          <Link href="/" className="inline-flex items-center gap-3 mb-4">
-            <Image
-              src="/images/logo.png"
-              alt="Kubicoo"
-              width={60}
-              height={60}
-              className="w-15 h-15"
-            />
-            <div>
-              <div className="text-3xl font-bold text-white">KUBICOO</div>
-              <div className="text-xs text-kubicoo-cyan italic">Digital que abre portas</div>
-            </div>
-          </Link>
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-md w-full space-y-8">
+        <div>
+          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+            Entrar na sua conta
+          </h2>
         </div>
-
-        {/* Card */}
-        <div className="bg-white rounded-2xl shadow-2xl p-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Bem-vindo de volta</h1>
-          <p className="text-gray-600 mb-8">Entre na sua conta Kubicoo</p>
-
-          <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Email */}
+        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+          {error && (
+            <div className="rounded-md bg-red-50 p-4">
+              <p className="text-sm text-red-800">{error}</p>
+            </div>
+          )}
+          <div className="rounded-md shadow-sm -space-y-px">
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
-                Email
-              </label>
-              <div className="relative">
-                <Mail className="absolute left-3 top-3.5 w-5 h-5 text-gray-400" />
-                <input
-                  type="email"
-                  required
-                  value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className="w-full pl-10 pr-4 py-3 border-2 border-gray-200 rounded-lg focus:border-kubicoo-cyan focus:outline-none transition-colors"
-                  placeholder="seu@email.com"
-                />
-              </div>
+              <label htmlFor="email" className="sr-only">Email</label>
+              <input
+                id="email"
+                name="email"
+                type="email"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+                placeholder="Email"
+              />
             </div>
-
-            {/* Password */}
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
-                Senha
-              </label>
-              <div className="relative">
-                <Lock className="absolute left-3 top-3.5 w-5 h-5 text-gray-400" />
-                <input
-                  type={showPassword ? 'text' : 'password'}
-                  required
-                  value={formData.password}
-                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                  className="w-full pl-10 pr-12 py-3 border-2 border-gray-200 rounded-lg focus:border-kubicoo-cyan focus:outline-none transition-colors"
-                  placeholder="••••••••"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-3.5 text-gray-400 hover:text-gray-600"
-                >
-                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                </button>
-              </div>
-            </div>
-
-            {/* Remember & Forgot */}
-            <div className="flex items-center justify-between">
-              <label className="flex items-center">
-                <input type="checkbox" className="w-4 h-4 text-kubicoo-cyan border-gray-300 rounded focus:ring-kubicoo-cyan" />
-                <span className="ml-2 text-sm text-gray-600">Lembrar-me</span>
-              </label>
-              <Link href="/auth/reset-password" className="text-sm text-kubicoo-cyan hover:underline">
-                Esqueceu a senha?
-              </Link>
-            </div>
-
-            {/* Submit */}
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full bg-kubicoo-cyan text-white py-3 rounded-lg font-semibold hover:bg-opacity-90 transition-all shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
-            >
-              {loading ? (
-                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-              ) : (
-                <>
-                  <LogIn className="w-5 h-5 mr-2" />
-                  Entrar
-                </>
-              )}
-            </button>
-          </form>
-
-          {/* Divider */}
-          <div className="relative my-6">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-gray-300"></div>
-            </div>
-            <div className="relative flex justify-center text-sm">
-              <span className="px-2 bg-white text-gray-500">ou</span>
+              <label htmlFor="password" className="sr-only">Password</label>
+              <input
+                id="password"
+                name="password"
+                type="password"
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+                placeholder="Senha"
+              />
             </div>
           </div>
 
-          {/* Sign up link */}
-          <p className="text-center text-gray-600">
-            Não tem uma conta?{' '}
-            <Link href="/auth/signup" className="text-kubicoo-cyan font-semibold hover:underline">
-              Criar conta grátis
-            </Link>
-          </p>
-        </div>
+          <div>
+            <button
+              type="submit"
+              disabled={loading}
+              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
+            >
+              {loading ? 'Entrando...' : 'Entrar'}
+            </button>
+          </div>
 
-        {/* Back to home */}
-        <div className="text-center mt-6">
-          <Link href="/" className="text-gray-400 hover:text-white transition-colors text-sm">
-            ← Voltar para início
-          </Link>
-        </div>
+          <div className="text-center">
+            <Link href="/auth/signup" className="text-blue-600 hover:text-blue-500">
+              Não tem conta? Criar conta
+            </Link>
+          </div>
+        </form>
       </div>
     </div>
   );
