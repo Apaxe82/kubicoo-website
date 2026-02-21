@@ -1,153 +1,92 @@
-// src/services/propertyService.js
-import axios from 'axios';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || '/api';
+'use client';
 
-// Create axios instance with defaults
-const apiClient = axios.create({
-  baseURL: API_URL,
-  timeout: 10000,
-  headers: {
-    'Content-Type': 'application/json',
-  },
-});
+import { useState, useEffect } from 'react';
+import PropertyCard from '@/components/PropertyCard';
+import { WhatsAppFloatingButton } from '@/components/WhatsAppButton';
 
-// Add auth token to requests
-apiClient.interceptors.request.use((config) => {
-  if (typeof window !== 'undefined') {
-    const token = localStorage.getItem('authToken');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-  }
-  return config;
-});
+export default function PropertiesPage() {
+  const [properties, setProperties] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-// Handle errors
-apiClient.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    console.error('API Error:', error.response?.data || error.message);
-    return Promise.reject(error);
-  }
-);
-
-// Search/List Properties
-export const searchProperties = async (filters = {}) => {
-  try {
-    const params = new URLSearchParams();
-    
-    if (filters.search) params.append('search', filters.search);
-    if (filters.category && filters.category !== 'all') params.append('category', filters.category);
-    if (filters.transaction_type) params.append('transaction_type', filters.transaction_type);
-    if (filters.municipality && filters.municipality !== 'all') params.append('municipality', filters.municipality);
-    if (filters.minPrice) params.append('minPrice', filters.minPrice);
-    if (filters.maxPrice) params.append('maxPrice', filters.maxPrice);
-    if (filters.bedrooms && filters.bedrooms !== 'all') params.append('bedrooms', filters.bedrooms);
-    if (filters.bathrooms && filters.bathrooms !== 'all') params.append('bathrooms', filters.bathrooms);
-    if (filters.sortBy) params.append('sortBy', filters.sortBy);
-    if (filters.page) params.append('page', filters.page);
-    if (filters.limit) params.append('limit', filters.limit);
-
-    const response = await apiClient.get(`/properties/search?${params.toString()}`);
-    return response.data;
-  } catch (error) {
-    throw error;
-  }
-};
-
-// Get Property Details
-export const getPropertyById = async (propertyId) => {
-  try {
-    const response = await apiClient.get(`/properties/${propertyId}`);
-    return response.data;
-  } catch (error) {
-    throw error;
-  }
-};
-
-// Create Property (Landlord only)
-export const createProperty = async (propertyData) => {
-  try {
-    const response = await apiClient.post('/properties/create', propertyData);
-    return response.data;
-  } catch (error) {
-    throw error;
-  }
-};
-
-// Update Property
-export const updateProperty = async (propertyId, propertyData) => {
-  try {
-    const response = await apiClient.put(`/properties/${propertyId}`, propertyData);
-    return response.data;
-  } catch (error) {
-    throw error;
-  }
-};
-
-// Delete Property
-export const deleteProperty = async (propertyId) => {
-  try {
-    const response = await apiClient.delete(`/properties/${propertyId}`);
-    return response.data;
-  } catch (error) {
-    throw error;
-  }
-};
-
-// Get My Properties (Landlord)
-export const getMyProperties = async () => {
-  try {
-    const response = await apiClient.get('/properties/my-properties');
-    return response.data;
-  } catch (error) {
-    throw error;
-  }
-};
-
-// Toggle Property Availability
-export const togglePropertyAvailability = async (propertyId, available) => {
-  try {
-    const response = await apiClient.patch(`/properties/${propertyId}/availability`, {
-      available
-    });
-    return response.data;
-  } catch (error) {
-    throw error;
-  }
-};
-
-// Upload Property Photos
-export const uploadPropertyPhotos = async (propertyId, photos) => {
-  try {
-    const formData = new FormData();
-    photos.forEach((photo, index) => {
-      formData.append(`photo${index}`, photo);
-    });
-
-    const response = await apiClient.post(
-      `/properties/${propertyId}/photos`,
-      formData,
-      {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
+  useEffect(() => {
+    async function fetchProperties() {
+      try {
+        const response = await fetch('http://localhost:5000/api/accommodation/search');
+        
+        if (!response.ok) {
+          throw new Error('Failed to fetch properties');
+        }
+        
+        const data = await response.json();
+        setProperties(data.accommodations || []);
+      } catch (err) {
+        console.error('Error fetching properties:', err);
+        setError(err.message);
+      } finally {
+        setLoading(false);
       }
-    );
-    return response.data;
-  } catch (error) {
-    throw error;
-  }
-};
+    }
 
-export default {
-  searchProperties,
-  getPropertyById,
-  createProperty,
-  updateProperty,
-  deleteProperty,
-  getMyProperties,
-  togglePropertyAvailability,
-  uploadPropertyPhotos,
-};
+    fetchProperties();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-4 border-[#06B6D4] border-t-transparent mx-auto mb-4"></div>
+          <p className="text-gray-600">A carregar propriedades...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center px-4">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">Erro ao carregar</h2>
+          <p className="text-gray-600 mb-4">{error}</p>
+          <button 
+            onClick={() => window.location.reload()}
+            className="bg-[#06B6D4] text-white px-6 py-3 rounded-lg hover:bg-opacity-90"
+          >
+            Tentar novamente
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      {/* Header */}
+      <div className="bg-white border-b">
+        <div className="container mx-auto px-4 py-8">
+          <h1 className="text-4xl font-bold text-gray-900 mb-2">Propriedades Disponíveis</h1>
+          <p className="text-gray-600">Encontre o imóvel perfeito para você</p>
+        </div>
+      </div>
+
+      {/* Properties Grid */}
+      <div className="container mx-auto px-4 py-8">
+        {properties.length === 0 ? (
+          <div className="text-center py-12">
+            <p className="text-gray-600 text-lg">Nenhuma propriedade encontrada</p>
+          </div>
+        ) : (
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {properties.map((property) => (
+              <PropertyCard key={property.id} property={property} />
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Floating WhatsApp Button */}
+      <WhatsAppFloatingButton phoneNumber="244923456789" />
+    </div>
+  );
+}

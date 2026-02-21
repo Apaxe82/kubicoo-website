@@ -16,9 +16,6 @@ const nextConfig = {
   experimental: {
     optimizePackageImports: ['lucide-react', 'react-leaflet'],
   },
-  turbopack: {
-    root: process.cwd(),
-  },
 };
 
 export default nextConfig;
