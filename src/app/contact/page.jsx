@@ -4,7 +4,7 @@ import React from 'react';
 import { 
   MessageCircle, Phone, Mail, MapPin, 
   Instagram, Facebook, Linkedin, Youtube, 
-  Send, Clock, ShieldCheck
+  Send, Clock, ShieldCheck, ArrowRight
 } from 'lucide-react';
 import Link from 'next/link';
 
