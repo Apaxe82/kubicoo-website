@@ -70,7 +70,7 @@ export default function AboutPage() {
         <p className="text-2xl font-extrabold text-blue-700 mb-6 italic leading-snug">
           "A Kubicoo será a forma como Angola reserva e compra imóveis. Ponto final."
         </p>
-        <p className="text-slate-500 font-bold tracking-[0.2em] mb-10">ANGOLA 🇦🇴 • MOZAMBIQUE 🇲🇿 • DRC 🇨🇩</p>
+        <p className="text-slate-500 font-bold tracking-[0.2em] mb-10">ANGOLA 🇦🇴 </p>
         <button className="bg-blue-600 text-white px-12 py-4 rounded-full font-black text-xl hover:bg-blue-700 shadow-xl transition-all active:scale-95">
           Começar Agora
         </button>
