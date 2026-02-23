@@ -111,7 +111,7 @@ export default function HomePage() {
 
       {/* WhatsApp Button */}
       {showWhatsApp && (
-        <a
+        <a 
           href="https://wa.me/244923456789?text=Olá%20Kubicoo"
           target="_blank"
           rel="noopener noreferrer"
