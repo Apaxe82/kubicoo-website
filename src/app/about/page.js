@@ -10,7 +10,7 @@ export default function AboutPage() {
         <p className="mb-4 text-red-600 font-medium">Isto acontece milhares de vezes todos os dias em Angola e por África fora. Boas casas ficam vazias. Bons inquilinos dormem no sofá de amigos. Todos perdem.</p>
       </section>
 
-      <section className="mb-8 bg-blue-50 p-6 rounded-lg shadow-sm">
+      <section className="mb-8 bg-white-50 p-6 rounded-lg shadow-sm">
         <h2 className="text-2xl font-semibold mb-4 text-blue-800">A Kubicoo Resolve Isso</h2>
         <p className="mb-4 text-lg">Somos um marketplace onde a confiança faz parte do sistema, não é apenas uma promessa.</p>
         <ul className="list-decimal ml-6 space-y-3">
