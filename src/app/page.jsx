@@ -68,17 +68,17 @@ export default function HomePage() {
   // 15 Transaction Types (your exact list + icons + badges)
   const transactionTypes = [
     { icon: <Home className="w-8 h-8" />, title: 'Arrendamento', subtitle: 'Residencial & Comercial', description: 'Aluguel de longo prazo, curto prazo, por quarto', badge: '10% comissão' },
-    { icon: <DollarSign className="w-8 h-8" />, title: 'Venda', subtitle: 'Residencial & Comercial', description: 'Compra e venda de propriedades e terrenos', badge: '2-3% comissão' },
-    { icon: <RefreshCcw className="w-8 h-8" />, title: 'Permuta', subtitle: 'Troca de Propriedades', description: 'Troca direta ou com torna entre propriedades', badge: '1.5% comissão' },
-    { icon: <Briefcase className="w-8 h-8" />, title: 'Trespasse', subtitle: 'Transferência de Negócio', description: 'Restaurantes, cafés, lojas em funcionamento', badge: '5-8% comissão' },
-    { icon: <FileText className="w-8 h-8" />, title: 'Concessão', subtitle: 'Terrenos do Estado', description: 'Direito de uso temporário 1-60 anos', badge: '2% comissão' },
-    { icon: <Building2 className="w-8 h-8" />, title: 'Direito de Superfície', subtitle: 'Construir em Terreno Alheio', description: 'Separação entre terreno e construção', badge: '2.5% comissão' },
-    { icon: <Users className="w-8 h-8" />, title: 'Usufruto', subtitle: 'Vitalício ou Temporário', description: 'Direito de usar propriedade de outrem', badge: '1-2% comissão' },
+    { icon: <DollarSign className="w-8 h-8" />, title: 'Venda', subtitle: 'Residencial & Comercial', description: 'Compra e venda de propriedades e terrenos', badge: '6-10% comissão' },
+    { icon: <RefreshCcw className="w-8 h-8" />, title: 'Permuta', subtitle: 'Troca de Propriedades', description: 'Troca direta ou com torna entre propriedades', badge: '3.5% comissão' },
+    { icon: <Briefcase className="w-8 h-8" />, title: 'Trespasse', subtitle: 'Transferência de Negócio', description: 'Restaurantes, cafés, lojas em funcionamento', badge: '6-10% comissão' },
+    { icon: <FileText className="w-8 h-8" />, title: 'Concessão', subtitle: 'Terrenos do Estado', description: 'Direito de uso temporário 1-60 anos', badge: '4% comissão' },
+    { icon: <Building2 className="w-8 h-8" />, title: 'Direito de Superfície', subtitle: 'Construir em Terreno Alheio', description: 'Separação entre terreno e construção', badge: '4.5% comissão' },
+    { icon: <Users className="w-8 h-8" />, title: 'Usufruto', subtitle: 'Vitalício ou Temporário', description: 'Direito de usar propriedade de outrem', badge: '3-5% comissão' },
     { icon: <Key className="w-8 h-8" />, title: 'Gestão de Propriedade', subtitle: 'Property Management', description: 'Gestão completa para investidores', badge: '8-12% mensal' },
-    { icon: <PiggyBank className="w-8 h-8" />, title: 'Leasing Imobiliário', subtitle: 'Arrendamento c/ Opção', description: 'Arrendar com opção de compra', badge: '3.5% comissão' },
+    { icon: <PiggyBank className="w-8 h-8" />, title: 'Leasing Imobiliário', subtitle: 'Arrendamento c/ Opção', description: 'Arrendar com opção de compra', badge: '5.5% comissão' },
     { icon: <Calculator className="w-8 h-8" />, title: 'Avaliação Imobiliária', subtitle: 'Perito Certificado', description: 'Valor de mercado oficial', badge: 'A partir 50K' },
     { icon: <Scale className="w-8 h-8" />, title: 'Consultoria Jurídica', subtitle: 'Apoio Legal Completo', description: 'Verificação, contratos, regularização', badge: 'A partir 100K' },
-    { icon: <Hammer className="w-8 h-8" />, title: 'Leilões Imobiliários', subtitle: 'Judicial & Voluntário', description: 'Venda ao melhor licitante', badge: '8% comissão' },
+    { icon: <Hammer className="w-8 h-8" />, title: 'Leilões Imobiliários', subtitle: 'Judicial & Voluntário', description: 'Venda ao melhor licitante', badge: '10% comissão' },
   ];
 
   const services = [
