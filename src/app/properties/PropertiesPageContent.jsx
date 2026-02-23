@@ -5,8 +5,8 @@ import { useSearchParams } from 'next/navigation';
 import { MapPin, Calendar, Clock, Users, Filter, Grid, List, SlidersHorizontal } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { WhatsAppFloatingButton } from '@/components/WhatsAppButton';
-import { getPropertyInquiryLink } from '@/utils/whatsappLinks';
+import { WhatsAppFloatingButton } from '../../components/WhatsAppButton';
+import { getPropertyInquiryLink } from '../../utils/whatsappLinks';
 
 export default function PropertiesPage() {
   const searchParams = useSearchParams();
