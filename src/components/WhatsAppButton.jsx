@@ -1,27 +1,21 @@
 'use client';
 
+import React from 'react';
 import { MessageCircle } from 'lucide-react';
-import { 
-  openWhatsApp, 
-  getPropertyInquiryLink, 
-  getBookingInquiryLink,
-  getGeneralInquiryLink 
-} from '@/utils/whatsappLinks';
+// Usando o alias @ para garantir consistência no projeto
+import { openWhatsApp } from '../utils/whatsappLinks';
 
 /**
- * WhatsApp Contact Button Component
- * Agora suporta tipos específicos para automatizar mensagens
+ * Botão padrão de ação para WhatsApp (Button element)
  */
-export default function WhatsAppButton({ 
-  type = 'general', // 'property', 'booking', 'general'
-  data,             // O objeto da propriedade ou reserva
-  text, 
+export default function WhatsAppButton({
+  link,
+  text = 'Contactar via WhatsApp',
   variant = 'primary',
   size = 'md',
   className = ''
 }) {
-  
-  const baseStyles = 'inline-flex items-center justify-center gap-2 font-semibold transition-all rounded-lg active:scale-95';
+  const baseStyles = 'inline-flex items-center justify-center gap-2 font-semibold transition-all rounded-lg';
   
   const variants = {
     primary: 'bg-green-500 text-white hover:bg-green-600 shadow-md hover:shadow-lg',
@@ -35,89 +29,71 @@ export default function WhatsAppButton({
     md: 'px-4 py-3 text-base',
     lg: 'px-6 py-4 text-lg'
   };
-
-  // Lógica para determinar qual link gerar baseado no tipo
-  const handleAction = (e) => {
+  
+  const handleClick = (e) => {
     e.preventDefault();
-    let finalLink = '';
-
-    switch (type) {
-      case 'property':
-        finalLink = getPropertyInquiryLink(data);
-        break;
-      case 'booking':
-        finalLink = getBookingInquiryLink(data);
-        break;
-      default:
-        finalLink = getGeneralInquiryLink(text || 'Suporte');
+    if (link) {
+      openWhatsApp(link);
     }
-
-    openWhatsApp(finalLink);
   };
-
-  const buttonText = text || (type === 'property' ? 'Solicitar Informações' : 'Contactar Suporte');
   
   return (
     <button
-      onClick={handleAction}
+      onClick={handleClick}
       className={`${baseStyles} ${variants[variant]} ${sizes[size]} ${className}`}
-      aria-label={buttonText}
+      aria-label={text}
     >
       <MessageCircle className="w-5 h-5" />
-      <span>{buttonText}</span>
+      <span>{text}</span>
     </button>
   );
 }
 
 /**
- * Floating WhatsApp Button (Sticky)
- * Mantido para acesso global rápido
+ * Botão Flutuante (Fixed) que aparece no canto da página
  */
-
 export function WhatsAppFloatingButton({ phoneNumber = '244923456789' }) {
-  const link = `https://wa.me/${phoneNumber.replace(/\D/g, '')}?text=Olá!`;
-  
-  return (
-    <div className="fixed bottom-24 right-8 z-50">
-      <a 
-        href={link} 
-        target="_blank" 
-        rel="noopener noreferrer"
-        className="relative flex items-center justify-center w-16 h-16 bg-green-500 text-white rounded-full shadow-2xl hover:bg-green-600 transition-all hover:scale-110 group"
-      >
-        <MessageCircle className="w-8 h-8" />
-        
-        {/* Badge de Notificação (!) */}
-        <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] w-5 h-5 flex items-center justify-center rounded-full font-bold border-2 border-white animate-pulse">
-          !
-        </span>
-
-        {/* Tooltip */}
-        <span className="absolute right-20 bg-gray-900 text-white px-4 py-2 rounded-lg text-sm whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity shadow-xl pointer-events-none">
-          💬 Precisa de ajuda?
-        </span>
-      </a>
-    </div>
-  );
-}
-
-/**
- * WhatsApp Share Button
- * Ideal para as listagens de imóveis
- */
-export function WhatsAppShareButton({ url, title, className = '' }) {
-  const shareText = `Olha este imóvel que encontrei no Kubicoo: ${title}\n\n${url}`;
-  const link = `https://wa.me/?text=${encodeURIComponent(shareText)}`;
+  const message = encodeURIComponent('Olá Kubicoo! Preciso de ajuda.');
+  const link = `https://wa.me/${phoneNumber}?text=${message}`;
   
   return (
     <a
       href={link}
       target="_blank"
       rel="noopener noreferrer"
-      className={`inline-flex items-center gap-2 text-green-600 font-medium hover:underline ${className}`}
+      className="fixed bottom-24 right-8 z-40 bg-green-500 text-white p-4 rounded-full shadow-2xl hover:bg-green-600 transition-all hover:scale-110 group"
+      aria-label="Contactar via WhatsApp"
+    >
+      <MessageCircle className="w-7 h-7" />
+      <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold animate-pulse">
+        !
+      </span>
+      <span className="absolute right-20 top-3 bg-gray-900 text-white px-4 py-2 rounded-lg text-sm whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity shadow-xl pointer-events-none">
+        💬 Precisa de ajuda?
+      </span>
+    </a>
+  );
+}
+
+/**
+ * Botão de Partilha para imóveis específicos
+ */
+export function WhatsAppShareButton({ url, title, className = '' }) {
+  const message = `Confira este imóvel no Kubicoo: ${title}\n\n${url}`;
+  const encodedMessage = encodeURIComponent(message);
+  const link = `https://wa.me/?text=${encodedMessage}`;
+  
+  return (
+    <a
+      href={link}
+      target="_blank"
+      rel="noopener noreferrer"
+      className={`inline-flex items-center gap-2 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors ${className}`}
     >
       <MessageCircle className="w-4 h-4" />
       <span>Partilhar</span>
     </a>
   );
 }
+
+

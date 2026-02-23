@@ -1,129 +1,51 @@
-// utils/whatsappLinks.js
-// WhatsApp Deep Link Generator for Kubicoo - Version 2.0 (Integrated with DB logic)
-
 /**
- * Formata valores numéricos para a moeda local (Kwanza)
+ * Utilitários para geração de links dinâmicos do WhatsApp
+ * Kubicoo - Real Estate Angola
  */
-const formatKwanza = (amount) => {
-  if (!amount) return 'A consultar';
-  return new Intl.NumberFormat('pt-AO', {
-    style: 'currency',
-    currency: 'AOA',
-    minimumFractionDigits: 2
-  }).format(amount);
-};
+
+const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '244923456789';
 
 /**
- * Generate WhatsApp chat link with pre-filled message
+ * Gera um link universal wa.me
  */
 export function generateWhatsAppLink(phoneNumber, message) {
-  const cleanNumber = phoneNumber.replace(/\D/g, '');
+  const cleanNumber = phoneNumber.replace(/\D/g, ''); // Garante apenas números
   const encodedMessage = encodeURIComponent(message);
   return `https://wa.me/${cleanNumber}?text=${encodedMessage}`;
-  const expiryDate = booking.expires_at 
-  ? new Date(booking.expires_at).toLocaleDateString('pt-AO') 
-  : 'Vitalício';
 }
 
 /**
- * Generate property inquiry WhatsApp link
+ * Link para interesse em uma propriedade específica
  */
-export function getPropertyInquiryLink(property, phoneNumber = '244923456789') {
-  const message = `Olá Kubicoo! 👋
+export function getPropertyInquiryLink(property) {
+  if (!property) return `https://wa.me/${WHATSAPP_NUMBER}`;
 
-Estou interessado no seguinte imóvel:
+  const title = property.title || 'Imóvel sem título';
+  const location = property.neighbourhood || property.municipality || property.province || 'Localização não especificada';
+  const id = property.id || 'N/A';
 
-📍 *${property.title}*
-🏘️ Localização: ${property.neighbourhood || property.municipality}
-🆔 Referência: ${property.id}
-💰 Preço: ${formatKwanza(property.price)}
-
-Gostaria de mais informações sobre disponibilidade e condições de arrendamento.
-
-Obrigado!`;
-
-  return generateWhatsAppLink(phoneNumber, message);
+  const message = `Olá Kubicoo! 👋\n\nEstou interessado no imóvel:\n📍 ${title}\n🏘️ ${location}\n🆔 Ref: ${id}\n\nGostaria de mais informações.`;
+  
+  return generateWhatsAppLink(WHATSAPP_NUMBER, message);
 }
 
 /**
- * Generate booking inquiry WhatsApp link - INTEGRATED VERSION
+ * Link para suporte de uma reserva existente
  */
-export function getBookingInquiryLink(booking, phoneNumber = '244923456789') {
-  const nights = booking.nights || "A calcular";
-  const total = formatKwanza(booking.total_amount);
+export function getBookingInquiryLink(booking) {
+  if (!booking) return `https://wa.me/${WHATSAPP_NUMBER}`;
 
-  const message = `Olá Kubicoo! 👋
-
-Tenho uma questão sobre a minha reserva:
-
-🏠 *${booking.property_title || 'Alojamento Kubicoo'}*
-👤 Hóspede: ${booking.guest_name}
-📅 Check-in: ${booking.check_in}
-📅 Check-out: ${booking.check_out}
-🌙 Duração: ${nights} noites
-💰 Valor Total: ${total}
-
-💳 Ref. Pagamento: *${booking.payment_reference || 'Pendente'}*
-📊 Status: ${String(booking.payment_status).toUpperCase()}
-
-Poderiam me ajudar com o seguinte:
-[Escreva sua dúvida aqui]`;
-
-  return generateWhatsAppLink(phoneNumber, message);
+  const ref = booking.paymentReference || booking.id || 'Sem Referência';
+  const message = `Olá Kubicoo! 👋\n\nTenho uma dúvida sobre a minha reserva:\n🆔 Ref: ${ref}\n\nPodem ajudar?`;
+  
+  return generateWhatsAppLink(WHATSAPP_NUMBER, message);
 }
 
 /**
- * Generate visit scheduling WhatsApp link
- */
-export function getVisitSchedulingLink(property, phoneNumber = '244923456789') {
-  const message = `Olá Kubicoo! 👋
-
-Gostaria de agendar uma visita ao imóvel:
-
-📍 *${property.title}*
-🏘️ ${property.address || property.neighbourhood}
-🆔 Ref: ${property.id}
-
-Quando seria possível agendar?
-⏰ Sugestão: Manhãs (9h-12h) ou Tardes (14h-17h)
-
-Aguardo retorno!`;
-
-  return generateWhatsAppLink(phoneNumber, message);
-}
-
-/**
- * Generate payment help WhatsApp link
- */
-export function getPaymentHelpLink(paymentReference, phoneNumber = '244923456789') {
-  const message = `Olá Kubicoo! 👋
-
-Preciso de ajuda com o pagamento da referência:
-💳 *${paymentReference}*
-
-Já realizei o pagamento, mas o status ainda não atualizou. Como devo proceder?`;
-
-  return generateWhatsAppLink(phoneNumber, message);
-}
-
-/**
- * Generate general inquiry WhatsApp link
- */
-export function getGeneralInquiryLink(subject, phoneNumber = '244923456789') {
-  const message = `Olá Kubicoo! 👋
-
-Tenho uma dúvida sobre: ${subject}
-
-[Descreva sua dúvida aqui]`;
-
-  return generateWhatsAppLink(phoneNumber, message);
-}
-
-/**
- * Open WhatsApp in new window
+ * Helper para abrir o link em uma nova aba
  */
 export function openWhatsApp(link) {
-  if (typeof window !== 'undefined') {
+  if (typeof window !== 'undefined' && link) {
     window.open(link, '_blank', 'noopener,noreferrer');
   }
 }
