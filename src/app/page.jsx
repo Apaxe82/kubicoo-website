@@ -1,141 +1,113 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { 
-  Search, Home, Building2, TrendingUp, Shield, Clock, MapPin, DollarSign, Users, 
-  MessageCircle, Phone, Mail, ArrowRight, Calendar, Warehouse, Hotel, Bed,
-  Facebook, Instagram, Linkedin, Menu, X, Star, CheckCircle,
-  Key, PiggyBank, Calculator, Scale, Hammer, FileText, Briefcase, RefreshCcw
+import {
+  Search, MapPin, Shield, Zap, Star, ArrowRight, Clock, CheckCircle2, Menu, X,
+  Phone, Mail, Instagram, Facebook, Linkedin, Youtube, MessageCircle,
+  Home, Building2, Bed, Hotel, Users, Calendar,
+  DollarSign, RefreshCcw, Briefcase, FileText, Key, PiggyBank, Calculator, Scale, Hammer
 } from 'lucide-react';
 
 export default function HomePage() {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [showWhatsApp, setShowWhatsApp] = useState(true);
+  const [menuOpen, setMenuOpen] = useState(false);
   const [searchParams, setSearchParams] = useState({
+    query: '',
     location: '',
-    checkIn: '',
-    checkOut: '',
-    bookingType: 'night',
-    hours: 3,
-    guests: 2,
     propertyType: 'all',
-    minPrice: '',
-    maxPrice: '',
-    bedrooms: 1
+    bookingType: 'night',
+    guests: 2
   });
 
-  const handleSearch = () => {
-    const params = new URLSearchParams({
-      location: searchParams.location,
-      checkIn: searchParams.checkIn,
-      checkOut: searchParams.checkOut,
-      bookingType: searchParams.bookingType,
-      hours: searchParams.hours.toString(),
-      guests: searchParams.guests.toString(),
-      type: searchParams.propertyType,
-      minPrice: searchParams.minPrice,
-      maxPrice: searchParams.maxPrice,
-      bedrooms: searchParams.bedrooms.toString()
-    });
-    window.location.href = `/properties?${params.toString()}`;
-  };
-
   const transactionTypes = [
-    { icon: <Home className="w-8 h-8" />, title: 'Arrendamento', subtitle: 'Residencial & Comercial', description: 'Aluguel de longo prazo, curto prazo, por quarto', badge: '10% comissão', link: '/services/arrendamento' },
-    { icon: <DollarSign className="w-8 h-8" />, title: 'Venda', subtitle: 'Residencial & Comercial', description: 'Compra e venda de propriedades e terrenos', badge: '6-10% comissão', link: '/services/venda' },
-    { icon: <RefreshCcw className="w-8 h-8" />, title: 'Permuta', subtitle: 'Troca de Propriedades', description: 'Troca direta ou com torna entre propriedades', badge: '3.5% comissão', link: '/services/permuta' },
-    { icon: <Briefcase className="w-8 h-8" />, title: 'Trespasse', subtitle: 'Transferência de Negócio', description: 'Restaurantes, cafés, lojas em funcionamento', badge: '6-10% comissão', link: '/services/trespasse' },
-    { icon: <FileText className="w-8 h-8" />, title: 'Concessão', subtitle: 'Terrenos do Estado', description: 'Direito de uso temporário 1-60 anos', badge: '4% comissão', link: '/services/concessao' },
-    { icon: <Building2 className="w-8 h-8" />, title: 'Direito de Superfície', subtitle: 'Construir em Terreno Alheio', description: 'Separação entre terreno e construção', badge: '4.5% comissão', link: '/services/superficie' },
-    { icon: <Users className="w-8 h-8" />, title: 'Usufruto', subtitle: 'Vitalício ou Temporário', description: 'Direito de usar propriedade de outrem', badge: '3-5% comissão', link: '/services/usufruto' },
-    { icon: <Key className="w-8 h-8" />, title: 'Gestão de Propriedade', subtitle: 'Property Management', description: 'Gestão completa para investidores', badge: '8-12% mensal', link: '/services/gestao' },
-    { icon: <PiggyBank className="w-8 h-8" />, title: 'Leasing Imobiliário', subtitle: 'Arrendamento c/ Opção', description: 'Arrendar com opção de compra', badge: '5.5% comissão', link: '/services/leasing' },
-    { icon: <Calculator className="w-8 h-8" />, title: 'Avaliação Imobiliária', subtitle: 'Perito Certificado', description: 'Valor de mercado oficial', badge: 'A partir 50K', link: '/services/avaliacao' },
-    { icon: <Scale className="w-8 h-8" />, title: 'Consultoria Jurídica', subtitle: 'Apoio Legal Completo', description: 'Verificação, contratos, regularização', badge: 'A partir 100K', link: '/services/consultoria' },
-    { icon: <Hammer className="w-8 h-8" />, title: 'Leilões Imobiliários', subtitle: 'Judicial & Voluntário', description: 'Venda ao melhor licitante', badge: '10% comissão', link: '/services/leiloes' }
+    { icon: <Home className="w-8 h-8" />, title: 'Arrendamento', badge: '10%', link: '/services/arrendamento' },
+    { icon: <DollarSign className="w-8 h-8" />, title: 'Venda', badge: '6-10%', link: '/services/venda' },
+    { icon: <RefreshCcw className="w-8 h-8" />, title: 'Permuta', badge: '3.5%', link: '/services/permuta' },
+    { icon: <Briefcase className="w-8 h-8" />, title: 'Trespasse', badge: '6-10%', link: '/services/trespasse' },
+    { icon: <FileText className="w-8 h-8" />, title: 'Concessão', badge: '4%', link: '/services/concessao' },
+    { icon: <Building2 className="w-8 h-8" />, title: 'Direito de Superfície', badge: '4.5%', link: '/services/superficie' },
+    { icon: <Users className="w-8 h-8" />, title: 'Usufruto', badge: '3-5%', link: '/services/usufruto' },
+    { icon: <Key className="w-8 h-8" />, title: 'Gestão', badge: '8-12%', link: '/services/gestao' },
+    { icon: <PiggyBank className="w-8 h-8" />, title: 'Leasing', badge: '5.5%', link: '/services/leasing' },
+    { icon: <Calculator className="w-8 h-8" />, title: 'Avaliação', badge: '50K+', link: '/services/avaliacao' },
+    { icon: <Scale className="w-8 h-8" />, title: 'Consultoria', badge: '100K+', link: '/services/consultoria' },
+    { icon: <Hammer className="w-8 h-8" />, title: 'Leilões', badge: '10%', link: '/services/leiloes' }
   ];
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Header */}
-      <header className="border-b border-gray-200 bg-white sticky top-0 z-50 shadow-sm">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center justify-between">
-            <Link href="/" className="flex items-center gap-4 hover:opacity-90 transition-opacity">
-              <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-[#06B6D4] to-blue-600 rounded-xl flex items-center justify-center shadow-lg">
-                <Home className="w-10 h-10 sm:w-12 sm:h-12 text-white" />
-              </div>
-              <div>
-                <div className="text-3xl sm:text-4xl font-bold text-[#0A1628]">KUBICOO</div>
-                <div className="text-xs sm:text-sm text-gray-500 italic -mt-1">Digital que abre portas</div>
-              </div>
-            </Link>
 
-            <nav className="hidden lg:flex items-center gap-8">
-              <Link href="/properties" className="text-gray-700 hover:text-[#06B6D4] font-medium transition-colors">Propriedades</Link>
-              <Link href="/services" className="text-gray-700 hover:text-[#06B6D4] font-medium transition-colors">Serviços</Link>
-              <Link href="/pricing" className="text-gray-700 hover:text-[#06B6D4] font-medium transition-colors">Planos</Link>
-              <Link href="/about" className="text-gray-700 hover:text-[#06B6D4] font-medium transition-colors">Sobre</Link>
-              <Link href="/contact" className="text-gray-700 hover:text-[#06B6D4] font-medium transition-colors">Contacto</Link>
-            </nav>
-
-            <div className="flex items-center gap-3">
-              <Link href="/auth/login" className="hidden sm:block text-gray-700 hover:text-[#06B6D4] font-medium transition-colors">Entrar</Link>
-              <Link href="/auth/signup" className="bg-[#06B6D4] text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-semibold hover:bg-opacity-90 transition-all shadow-md hover:shadow-lg text-sm sm:text-base">Criar Conta</Link>
+      {/* NAVBAR */}
+      <nav className="sticky top-0 z-50 bg-[#0A1628]/95 backdrop-blur border-b border-white/10 px-4 py-3">
+        <div className="container mx-auto flex items-center justify-between">
+          <Link href="/" className="flex items-center gap-3">
+            <Image src="/images/logo.png" alt="Kubicoo" width={80} height={80} className="w-16 h-16 sm:w-20 sm:h-20" priority />
+            <div className="hidden sm:block">
+              <span className="text-white text-xl font-black tracking-widest">KUBICOO</span>
+              <p className="text-[#06B6D4] text-xs italic">Digital que abre portas</p>
             </div>
+          </Link>
 
-            <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="lg:hidden p-2 text-gray-700">
-              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-            </button>
+          <div className="hidden lg:flex items-center gap-8 text-sm font-semibold text-gray-300">
+            <Link href="/properties" className="hover:text-[#06B6D4]">Imóveis</Link>
+            <Link href="/services" className="hover:text-[#06B6D4]">Serviços</Link>
+            <Link href="/pricing" className="hover:text-[#06B6D4]">Planos</Link>
+            <Link href="/about" className="hover:text-[#06B6D4]">Sobre</Link>
+            <Link href="/contact" className="hover:text-[#06B6D4]">Contacto</Link>
           </div>
 
-          {mobileMenuOpen && (
-            <div className="lg:hidden py-4 border-t mt-4">
-              <nav className="flex flex-col gap-4">
-                <Link href="/properties" className="text-gray-700">Propriedades</Link>
-                <Link href="/services" className="text-gray-700">Serviços</Link>
-                <Link href="/pricing" className="text-gray-700">Planos</Link>
-                <Link href="/about" className="text-gray-700">Sobre</Link>
-                <Link href="/contact" className="text-gray-700">Contacto</Link>
-                <div className="flex flex-col gap-2 pt-4 border-t">
-                  <Link href="/auth/login" className="px-6 py-2.5 text-center border rounded-lg">Entrar</Link>
-                  <Link href="/auth/signup" className="px-6 py-2.5 text-center bg-[#06B6D4] text-white rounded-lg">Criar Conta</Link>
-                </div>
-              </nav>
-            </div>
-          )}
+          <div className="flex items-center gap-3">
+            <Link href="/auth/signup" className="hidden sm:inline-flex items-center gap-2 bg-[#06B6D4] hover:bg-cyan-500 text-white text-sm font-bold px-5 py-2.5 rounded-full">
+              Anunciar <ArrowRight className="w-4 h-4" />
+            </Link>
+            <button onClick={() => setMenuOpen(!menuOpen)} className="lg:hidden text-white p-2 hover:bg-white/10 rounded-xl">
+              {menuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            </button>
+          </div>
         </div>
-      </header>
 
-      {/* WhatsApp Button */}
-      {showWhatsApp && (
-        <a 
-          href="https://wa.me/244923456789?text=Olá%20Kubicoo"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="fixed bottom-8 right-8 z-50 bg-green-500 text-white p-5 rounded-full shadow-2xl hover:bg-green-600 transition-all hover:scale-110 group animate-bounce"
-        >
-          <MessageCircle className="w-8 h-8" />
-          <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-6 h-6 flex items-center justify-center animate-pulse font-bold">1</span>
-          <span className="absolute right-20 top-4 bg-gray-900 text-white px-4 py-2 rounded-lg text-sm whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity shadow-xl">💬 Precisa de ajuda?</span>
-        </a>
-      )}
+        {menuOpen && (
+          <div className="lg:hidden mt-4 pb-4 border-t border-white/10 pt-4 flex flex-col gap-3 text-gray-300 text-sm font-semibold">
+            <Link href="/properties" className="hover:text-[#06B6D4] px-2 py-1">Imóveis</Link>
+            <Link href="/services" className="hover:text-[#06B6D4] px-2 py-1">Serviços</Link>
+            <Link href="/pricing" className="hover:text-[#06B6D4] px-2 py-1">Planos</Link>
+            <Link href="/about" className="hover:text-[#06B6D4] px-2 py-1">Sobre</Link>
+            <Link href="/contact" className="hover:text-[#06B6D4] px-2 py-1">Contacto</Link>
+          </div>
+        )}
+      </nav>
 
-      {/* Hero */}
-      <section className="bg-gradient-to-br from-[#0A1628] via-[#1a2942] to-gray-900 text-white py-20 px-4">
+      {/* WhatsApp Floating Button */}
+      <a
+      
+        href="https://wa.me/244923456789?text=Olá%20Kubicoo"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="fixed bottom-8 right-8 z-50 bg-green-500 text-white p-5 rounded-full shadow-2xl hover:bg-green-600 hover:scale-110 transition-all group animate-bounce"
+      >
+        <MessageCircle className="w-8 h-8" />
+        <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-6 h-6 flex items-center justify-center animate-pulse font-bold">1</span>
+        <span className="absolute right-20 top-4 bg-gray-900 text-white px-4 py-2 rounded-lg text-sm whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity">💬 Precisa de ajuda?</span>
+      </a>
+
+      {/* HERO */}
+      <section className="bg-[#0A1628] text-white py-20 px-4">
         <div className="container mx-auto">
           <div className="max-w-5xl mx-auto text-center mb-12">
+            <span className="inline-block bg-[#06B6D4]/10 border border-[#06B6D4]/30 text-[#06B6D4] text-xs font-bold px-4 py-1.5 rounded-full mb-4 tracking-widest uppercase">
+              🇦🇴 Plataforma #1 em Angola
+            </span>
             <h1 className="text-5xl lg:text-6xl font-extrabold mb-6">
-              Todos os Serviços Imobiliários em <span className="text-[#06B6D4]">Um Só Lugar</span>
+              Encontre o Seu <span className="text-[#06B6D4]">Imóvel Perfeito</span>
             </h1>
-            <p className="text-xl mb-8 text-gray-300">
-              Hospedagem temporária, hotéis, resorts, apartamentos ou venda / arrendamento longo prazo
+            <p className="text-xl text-gray-300 mb-8">
+              Arrendamento, Venda, Hospedagem • Pagamento Seguro via Escrow
             </p>
 
-            {/* Search */}
+            {/* Enhanced Search */}
             <div className="bg-white rounded-2xl shadow-2xl p-6 text-gray-900">
+              {/* Property Types */}
               <div className="flex flex-wrap gap-3 mb-6">
                 {[
                   { id: 'all', label: 'Todos', icon: Home },
@@ -158,37 +130,55 @@ export default function HomePage() {
                 ))}
               </div>
 
+              {/* Booking Type */}
               <div className="grid grid-cols-4 gap-2 mb-6">
                 {['hour', 'night', 'day', 'month'].map(type => (
                   <button
                     key={type}
                     onClick={() => setSearchParams({ ...searchParams, bookingType: type })}
-                    className={`py-3 rounded-lg font-semibold ${searchParams.bookingType === type ? 'bg-[#06B6D4] text-white' : 'bg-gray-100 text-gray-700'}`}
+                    className={`py-3 rounded-lg font-semibold transition-all ${
+                      searchParams.bookingType === type ? 'bg-[#06B6D4] text-white' : 'bg-gray-100 text-gray-700'
+                    }`}
                   >
                     {type === 'hour' ? 'Hora' : type === 'night' ? 'Noite' : type === 'day' ? 'Dia' : 'Mês'}
                   </button>
                 ))}
               </div>
 
+              {/* Search Inputs */}
               <div className="grid md:grid-cols-2 gap-4 mb-6">
                 <div className="relative">
                   <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                  <input type="text" placeholder="Localização" value={searchParams.location} onChange={(e) => setSearchParams({ ...searchParams, location: e.target.value })} className="w-full pl-10 pr-4 py-3 border rounded-lg" />
+                  <input
+                    type="text"
+                    placeholder="Localização (ex: Talatona)"
+                    value={searchParams.location}
+                    onChange={(e) => setSearchParams({ ...searchParams, location: e.target.value })}
+                    className="w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#06B6D4]"
+                  />
                 </div>
                 <div className="relative">
                   <Users className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                  <select value={searchParams.guests} onChange={(e) => setSearchParams({ ...searchParams, guests: Number(e.target.value) })} className="w-full pl-10 pr-4 py-3 border rounded-lg">
+                  <select
+                    value={searchParams.guests}
+                    onChange={(e) => setSearchParams({ ...searchParams, guests: Number(e.target.value) })}
+                    className="w-full pl-10 pr-4 py-3 border rounded-lg"
+                  >
                     {[1,2,3,4,5,6,8].map(g => <option key={g} value={g}>{g} hóspede{g > 1 ? 's' : ''}</option>)}
                   </select>
                 </div>
               </div>
 
-              <button onClick={handleSearch} className="w-full bg-[#06B6D4] text-white py-4 rounded-lg font-bold hover:bg-opacity-90 flex items-center justify-center gap-2">
+              <Link
+                href={`/properties?type=${searchParams.propertyType}&booking=${searchParams.bookingType}&location=${searchParams.location}`}
+                className="w-full bg-[#06B6D4] text-white py-4 rounded-lg font-bold hover:bg-opacity-90 flex items-center justify-center gap-2"
+              >
                 <Search className="w-5 h-5" /> Buscar Agora
-              </button>
+              </Link>
             </div>
           </div>
 
+          {/* Stats */}
           <div className="grid grid-cols-3 gap-6 text-center max-w-3xl mx-auto">
             <div><div className="text-4xl font-bold mb-2">1,500+</div><div className="text-gray-300">Propriedades</div></div>
             <div><div className="text-4xl font-bold mb-2">10,000+</div><div className="text-gray-300">Clientes</div></div>
@@ -197,18 +187,26 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Services */}
+      {/* TRUST STRIP */}
+      <section className="bg-[#06B6D4] py-4 px-4">
+        <div className="container mx-auto flex flex-wrap justify-center gap-8 text-white text-sm font-bold">
+          <span className="flex items-center gap-2"><Shield className="w-4 h-4" /> Pagamento Escrow</span>
+          <span className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4" /> Imóveis Verificados</span>
+          <span className="flex items-center gap-2"><Clock className="w-4 h-4" /> Reserva Rápida</span>
+          <span className="flex items-center gap-2"><Zap className="w-4 h-4" /> Suporte 24h</span>
+        </div>
+      </section>
+
+      {/* ALL SERVICES */}
       <section className="py-20 px-4 bg-white">
         <div className="container mx-auto">
           <h2 className="text-4xl font-bold text-center mb-12">Todos os Serviços Imobiliários</h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {transactionTypes.map((type, i) => (
-              <Link key={i} href={type.link} className="bg-white p-6 rounded-2xl shadow-lg hover:shadow-2xl transition-all border group">
+              <Link key={i} href={type.link} className="bg-white p-6 rounded-2xl shadow-lg hover:shadow-2xl transition-all border border-gray-100 hover:border-[#06B6D4]/30 group relative">
                 <div className="absolute top-3 right-3 bg-[#06B6D4]/10 text-[#06B6D4] text-xs font-bold px-3 py-1 rounded-full">{type.badge}</div>
-                <div className="text-[#06B6D4] mb-4">{type.icon}</div>
-                <h3 className="text-xl font-bold mb-1">{type.title}</h3>
-                <p className="text-sm font-semibold text-[#06B6D4] mb-2">{type.subtitle}</p>
-                <p className="text-sm text-gray-600 mb-4">{type.description}</p>
+                <div className="text-[#06B6D4] mb-4 group-hover:scale-110 transition-transform">{type.icon}</div>
+                <h3 className="text-xl font-bold mb-2">{type.title}</h3>
                 <div className="flex items-center text-[#06B6D4] font-semibold text-sm">Saber mais <ArrowRight className="w-4 h-4 ml-1" /></div>
               </Link>
             ))}
@@ -216,14 +214,103 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-[#0A1628] text-gray-300 py-16">
-        <div className="container mx-auto px-4">
-          <div className="text-center">
-            <p className="text-gray-400 text-sm">© 2026 Kubicoo. Todos os direitos reservados.</p>
+      {/* HOW IT WORKS */}
+      <section className="py-20 px-4 bg-gray-50">
+        <div className="container mx-auto text-center max-w-4xl">
+          <h2 className="text-3xl font-black mb-12">Como Funciona</h2>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[
+              { n: '1', title: 'Pesquisa', desc: 'Encontre imóveis verificados', icon: <Search className="w-6 h-6" /> },
+              { n: '2', title: 'Reserva', desc: 'Reserve online ou via WhatsApp', icon: <MessageCircle className="w-6 h-6" /> },
+              { n: '3', title: 'Paga Seguro', desc: 'Escrow protege seu dinheiro', icon: <Shield className="w-6 h-6" /> },
+              { n: '4', title: 'Check-in', desc: 'Confirme e libere o pagamento', icon: <CheckCircle2 className="w-6 h-6" /> },
+            ].map((s) => (
+              <div key={s.n} className="p-6 bg-white rounded-2xl border group hover:border-[#06B6D4] transition-all">
+                <div className="w-10 h-10 bg-[#06B6D4]/10 text-[#06B6D4] rounded-xl flex items-center justify-center mb-4 group-hover:bg-[#06B6D4] group-hover:text-white transition-all">{s.icon}</div>
+                <h3 className="font-bold mb-1">{s.title}</h3>
+                <p className="text-slate-500 text-sm">{s.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* PLANS */}
+      <section className="py-20 px-4 bg-white">
+        <div className="container mx-auto text-center max-w-5xl">
+          <h2 className="text-3xl font-black mb-4">Planos para Todos</h2>
+          <p className="text-slate-500 mb-12">Pesquisa grátis. Anuncia a partir de 10.000 AOA/mês.</p>
+          <div className="grid sm:grid-cols-3 gap-6">
+            {[
+              { name: 'PAYG', price: 'Grátis', sub: 'pesquisa ilimitada', hl: false },
+              { name: 'Standard', price: '10.000 AOA', sub: '/30 dias', hl: true },
+              { name: 'Premium', price: '25.000 AOA', sub: '/30 dias', hl: false },
+            ].map((p) => (
+              <div key={p.name} className={`p-6 rounded-2xl border ${p.hl ? 'border-[#06B6D4] ring-4 ring-cyan-50 bg-white shadow-xl' : 'border-gray-100 bg-white shadow'}`}>
+                <h3 className="font-bold mb-1">{p.name}</h3>
+                <p className="text-2xl font-black mb-1">{p.price}</p>
+                <p className="text-slate-500 text-sm mb-4">{p.sub}</p>
+                <Link href="/pricing" className={`block py-2.5 rounded-xl font-bold text-sm ${p.hl ? 'bg-[#06B6D4] text-white hover:bg-cyan-600' : 'bg-slate-100 hover:bg-slate-200'}`}>
+                  Ver plano
+                </Link>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* FOOTER */}
+      <footer className="bg-[#0A1628] text-gray-300 py-12 px-4">
+        <div className="container mx-auto">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
+            <div>
+              <div className="flex items-center gap-3 mb-4">
+                <Image src="/images/logo.png" alt="Kubicoo" width={50} height={50} className="w-12 h-12" />
+                <div>
+                  <h3 className="text-white text-xl font-bold">KUBICOO</h3>
+                  <p className="text-xs text-gray-400 italic">Digital que abre portas</p>
+                </div>
+              </div>
+              <p className="text-sm">Plataforma completa para imóveis em Angola</p>
+            </div>
+
+            <div>
+              <h4 className="text-white font-bold mb-4 uppercase text-sm">Plataforma</h4>
+              <ul className="space-y-2 text-sm">
+                <li><Link href="/properties" className="hover:text-[#06B6D4]">Imóveis</Link></li>
+                <li><Link href="/services" className="hover:text-[#06B6D4]">Serviços</Link></li>
+                <li><Link href="/pricing" className="hover:text-[#06B6D4]">Planos</Link></li>
+              </ul>
+            </div>
+
+            <div>
+              <h4 className="text-white font-bold mb-4 uppercase text-sm">Empresa</h4>
+              <ul className="space-y-2 text-sm">
+                <li><Link href="/about" className="hover:text-[#06B6D4]">Sobre</Link></li>
+                <li><Link href="/contact" className="hover:text-[#06B6D4]">Contacto</Link></li>
+              </ul>
+            </div>
+
+            <div>
+              <h4 className="text-white font-bold mb-4 uppercase text-sm">Contacto</h4>
+              <ul className="space-y-2 text-sm mb-4">
+                <li className="flex items-center gap-2"><Phone className="w-4 h-4 text-[#06B6D4]" /> +244 923 456 789</li>
+                <li className="flex items-center gap-2"><Mail className="w-4 h-4 text-[#06B6D4]" /> info@kubicoo.com</li>
+              </ul>
+              <div className="flex gap-3">
+                <Link href="#" className="p-2 bg-white/5 hover:bg-[#06B6D4] rounded-xl transition-all"><Instagram className="w-4 h-4" /></Link>
+                <Link href="#" className="p-2 bg-white/5 hover:bg-[#06B6D4] rounded-xl transition-all"><Facebook className="w-4 h-4" /></Link>
+                <Link href="#" className="p-2 bg-white/5 hover:bg-[#06B6D4] rounded-xl transition-all"><Linkedin className="w-4 h-4" /></Link>
+              </div>
+            </div>
+          </div>
+
+          <div className="border-t border-white/10 pt-6 text-center text-xs text-gray-500">
+            <p>© 2026 Kubicoo. Todos os direitos reservados.</p>
           </div>
         </div>
       </footer>
+
     </div>
   );
 }
