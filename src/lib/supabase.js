@@ -1,4 +1,3 @@
-// src/lib/supabase.js
 import { createClient } from '@supabase/supabase-js';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -10,7 +9,6 @@ if (!supabaseUrl || !supabaseAnonKey) {
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
-// Helper functions
 export async function uploadPropertyImage(file, propertyId) {
   const fileExt = file.name.split('.').pop();
   const fileName = `${propertyId}/${Date.now()}.${fileExt}`;
@@ -24,7 +22,6 @@ export async function uploadPropertyImage(file, propertyId) {
 
   if (error) throw error;
 
-  // Get public URL
   const { data: { publicUrl } } = supabase.storage
     .from('property-images')
     .getPublicUrl(fileName);
@@ -39,4 +36,14 @@ export async function deletePropertyImage(imageUrl) {
     .remove([path]);
 
   if (error) throw error;
+}
+
+export async function testConnection() {
+  try {
+    const { data, error } = await supabase.from('users').select('count');
+    if (error) throw error;
+    return { success: true, message: 'Connected to Supabase!' };
+  } catch (error) {
+    return { success: false, message: error.message };
+  }
 }
